@@ -160,3 +160,11 @@ git add .
 git commit -m "message"
 git push
 ```
+
+```plaintext
+text
+```
+
+|METHOD|ENDPOINT|BODY|
+|-----|-----|-----|
+|POST|/api/register| email,password|
