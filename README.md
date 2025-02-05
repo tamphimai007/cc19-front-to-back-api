@@ -161,10 +161,67 @@ git commit -m "message"
 git push
 ```
 
-```plaintext
-text
+## Step 8 Validate with zod
+
+/middlewares/validators.js
+
+```js
+const { z } = require("zod");
+// npm i zod
+// TEST validator
+exports.registerSchema = z
+  .object({
+    email: z.string().email("Email ไม่ถูกต้อง"),
+    firstname: z.string().min(3, "Firstname ต้องมากกว่า 3 อักขระ"),
+    lastname: z.string().min(3, "Lastname ต้องมากกว่า 3 อักขระ"),
+    password: z.string().min(6, "Password ต้องมากกว่า 6 อักขระ"),
+    confirmPassword: z.string().min(6, "Confirm Password ต้องมากกว่า 6 อักขระ"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Confirm Password ไม่ตรงกัน",
+    path: ["confirmPassword"],
+  });
+
+exports.loginSchema = z.object({
+  email: z.string().email("Email ไม่ถูกต้อง"),
+  password: z.string().min(6, "Password ต้องมากกว่า 6 อักขระ"),
+});
+
+exports.validateWithZod = (schema) => (req, res, next) => {
+  try {
+    console.log("Hello middleware");
+    schema.parse(req.body);
+    next();
+  } catch (error) {
+    const errMsg = error.errors.map((item) => item.message);
+    const errTxt = errMsg.join(",");
+    const mergeError = new Error(errTxt);
+    next(mergeError);
+  }
+};
 ```
 
-|METHOD|ENDPOINT|BODY|
-|-----|-----|-----|
-|POST|/api/register| email,password|
+and then update code
+/routes/auth-route.js
+
+```js
+const express = require("express");
+const router = express.Router();
+const authControllers = require("../controllers/auth-controller");
+const {
+  validateWithZod,
+  registerSchema,
+  loginSchema,
+} = require("../middlewares/validators");
+
+// @ENDPOINT http://localhost:8000/api/register
+router.post(
+  "/register",
+  validateWithZod(registerSchema),
+  authControllers.register
+);
+router.post("/login", validateWithZod(loginSchema), authControllers.login);
+
+// export
+module.exports = router;
+```
