@@ -14,7 +14,7 @@ exports.authCheck = async (req, res, next) => {
     // Verify token
     jwt.verify(token, process.env.SECRET, (err, decode) => {
       if (err) {
-        return createError(401, "Unautorized !!");
+        return createError(401, "Unauthorized !!");
       }
       // สร้าง property user  = decode ( ข้อมูลuser จาก token)
       req.user = decode;

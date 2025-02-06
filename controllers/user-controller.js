@@ -36,7 +36,14 @@ exports.updateRole = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
   try {
-    res.json({ message: "Hello, Delete User" });
+    const { id } = req.params;
+    const deleted = await prisma.profile.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    console.log(id);
+    res.json({ message: "Delete Success" });
   } catch (error) {
     next(error);
   }
