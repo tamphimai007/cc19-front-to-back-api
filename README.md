@@ -460,3 +460,11 @@ app.use(handleErrors);
 const PORT = 8000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 ```
+
+### when update code
+
+```bash
+git add .
+git commit -m "message"
+git push
+```

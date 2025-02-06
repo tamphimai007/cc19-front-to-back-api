@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth-controller");
+// middlewares
+const { authCheck } = require("../middlewares/auth-middleware");
 const {
   validateWithZod,
   registerSchema,
@@ -14,7 +16,6 @@ router.post(
   authControllers.register
 );
 router.post("/login", validateWithZod(loginSchema), authControllers.login);
-
-router.get("/current-user", authControllers.currentUser);
+router.get("/current-user", authCheck, authControllers.currentUser);
 // export
 module.exports = router;

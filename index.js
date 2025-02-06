@@ -9,7 +9,7 @@ const app = express();
 
 // Middlewares
 app.use(cors()); // Allows cross domain
-app.use(morgan("dev")); // Show log terminal
+app.use(morgan('dev')); // Show log terminal
 app.use(express.json()); // For read json
 
 // Routing
